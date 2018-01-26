@@ -478,13 +478,19 @@ const libSaml = () => {
             metadataCert = flattenDeep(metadataCert);
           }
           metadataCert = metadataCert.map(utility.normalizeCerString);
-          let x509Certificate = select(".//*[local-name(.)='X509Certificate']", s)[0].firstChild.data;
-          x509Certificate = utility.normalizeCerString(x509Certificate);
-          if (includes(metadataCert, x509Certificate)) {
-            selectedCert = x509Certificate;
-          }
-          if (selectedCert === '') {
-            throw new Error('certificate in document is not matched those specified in metadata');
+          let responseCerts = select(".//*[local-name(.)='X509Certificate']", s)
+          if (responseCerts.length) {
+            let x509Certificate = responseCerts[0].firstChild.data;
+            x509Certificate = utility.normalizeCerString(x509Certificate);
+            if (includes(metadataCert, x509Certificate)) {
+              selectedCert = x509Certificate;
+            }
+            if (selectedCert === '') {
+              throw new Error('certificate in document is not matched those specified in metadata');
+            }
+          } else {
+            // if cert is not included in SAML response, use cert from metadata
+            selectedCert = metadataCert[0]
           }
           sig.keyInfoProvider = new this.getKeyInfo(selectedCert);
         } else {

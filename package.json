@@ -21,7 +21,8 @@
     "test": "npm run build && nyc ava --verbose build/test",
     "test:pure": "nyc ava --verbose build/test",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "postinstall": "node postinstall"
+    "postinstall": "node postinstall",
+    "prepare": "npm run build:nolint"
   },
   "contributors": [
     "Tony Ngan <tonynwk919@gmail.com>"
